@@ -1,0 +1,91 @@
+{
+   "envelope_id":"c2667253-41fe-4a91-bb04-ec702431ee08",
+   "payload":{
+      "type":"view_submission",
+      "team":{
+         "id":"T08NXSDNGCB",
+         "domain":"e08ny9qjlsw-y4yzswjx",
+         "enterprise_id":"E08NY9QJLSW",
+         "enterprise_name":"The Death Star"
+      },
+      "user":{
+         "id":"U08NY9QJZ34",
+         "username":"sd08nxs6qp51_user",
+         "name":"sd08nxs6qp51_user",
+         "team_id":"T08NXSDNGCB"
+      },
+      "api_app_id":"A08NY5YKP35",
+      "token":"kofyxj0OFOcVjeUod5cYsRdk",
+      "trigger_id":"9262458550720.8779897764419.f08ea16f159e050ecb4a0dcc99ec875a",
+      "view":{
+         "id":"V096Z7NSCBY",
+         "team_id":"T08NXSDNGCB",
+         "type":"modal",
+         "blocks":[
+            {
+               "type":"header",
+               "block_id":"zGvqC",
+               "text":{
+                  "type":"plain_text",
+                  "text":":tada: You're all set! This is your schedule summary.",
+                  "emoji":true
+               }
+            },
+            {
+               "type":"divider",
+               "block_id":"5EFrb"
+            },
+            {
+               "type":"section",
+               "block_id":"confirmation_message",
+               "text":{
+                  "type":"plain_text",
+                  "text":"This is a plain text section block.",
+                  "emoji":true
+               }
+            }
+         ],
+         "private_metadata":"8/1/2025",
+         "callback_id":"",
+         "state":{
+            "values":{
+               
+            }
+         },
+         "hash":"1753250989.DaHJzfC9",
+         "title":{
+            "type":"plain_text",
+            "text":"Schedule Windows Upgrade",
+            "emoji":true
+         },
+         "clear_on_close":false,
+         "notify_on_close":false,
+         "close":{
+            "type":"plain_text",
+            "text":"Cancel",
+            "emoji":true
+         },
+         "submit":{
+            "type":"plain_text",
+            "text":"Submit",
+            "emoji":true
+         },
+         "previous_view_id":null,
+         "root_view_id":"V096Z7NSCBY",
+         "app_id":"A08NY5YKP35",
+         "external_id":"",
+         "app_installed_team_id":"T08NXSDNGCB",
+         "bot_id":"B097324CQSY"
+      },
+      "response_urls":[
+         
+      ],
+      "is_enterprise_install":false,
+      "enterprise":{
+         "id":"E08NY9QJLSW",
+         "name":"The Death Star"
+      }
+   },
+   "type":"interactive",
+   "accepts_response_payload":true
+}

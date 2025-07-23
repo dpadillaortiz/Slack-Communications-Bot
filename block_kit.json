@@ -1,0 +1,99 @@
+{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "You're scheduled for a Windows upgrade on 8/1/2025"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Please confirm your date or select a new time from below*"
+			}
+		},
+		{
+			"type": "actions",
+			"block_id": "scheduled_date",
+			"elements": [
+				{
+					"type": "button",
+					"action_id": "confirm_date",
+					"text": {
+						"type": "plain_text",
+						"emoji": true,
+						"text": "Confirm"
+					},
+					"style": "primary",
+					"value": "8/1/2025"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Propose a new time:*"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "alternate_1",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Upgrade Windows on 8/10/25*"
+			},
+			"accessory": {
+				"type": "button",
+				"action_id": "confirm_reschedule_1",
+				"text": {
+					"type": "plain_text",
+					"emoji": true,
+					"text": "Choose"
+				},
+				"value": "8/10/25"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "alternate_2",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Upgrade Windows on 8/20/25*"
+			},
+			"accessory": {
+				"type": "button",
+				"action_id": "confirm_reschedule_2",
+				"text": {
+					"type": "plain_text",
+					"emoji": true,
+					"text": "Choose"
+				},
+				"value": "8/20/25"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "alternate_3",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Upgrade Windows on 8/30/25*"
+			},
+			"accessory": {
+				"type": "button",
+				"action_id": "confirm_reschedule_3",
+				"text": {
+					"type": "plain_text",
+					"emoji": true,
+					"text": "Choose"
+				},
+				"value": "8/30/25"
+			}
+		}
+	]
+}

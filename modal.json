@@ -1,0 +1,41 @@
+{
+	"type": "modal",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+    "private_metadata":"",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Schedule Windows Upgrade",
+		"emoji": true
+	},
+    "callback_id":"confirmation_view",
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": ":tada: You're all set! This is your schedule summary."
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"block_id": "confirmation_message",
+			"text": {
+				"type": "plain_text",
+				"text": "This is a plain text section block.",
+				"emoji": true
+			}
+		}
+	]
+}
