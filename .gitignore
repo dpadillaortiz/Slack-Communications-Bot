@@ -1,4 +1,4 @@
 .env
 .venv
 push_to_github.sh
-responses
+responses/
