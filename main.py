@@ -40,7 +40,7 @@ app.client.chat_postMessage(
     blocks=get_block_message(),
     text="Message from Endpoint Engineering"
 )
-"""
+
 @app.action("confirm_date")
 def handle_some_action(ack, client, body, logger):
     ack()
@@ -119,4 +119,3 @@ def handle_view_submission_events(ack, body, client, logger):
 
 if __name__ == "__main__":      
     SocketModeHandler(app, SLACK_APP_TOKEN).start()
-"""
