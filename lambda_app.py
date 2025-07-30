@@ -56,7 +56,7 @@ def handle_some_action(ack, client, body, logger):
         view=get_view(private_metadata, confirmation_message),
         trigger_id=trigger_id
     )
-
+"""
 @app.action("confirm_reschedule_1")
 def handle_some_action(ack, client, body, logger):
     ack()
@@ -88,7 +88,7 @@ def handle_some_action(ack, client, body, logger):
         view=get_view(private_metadata, confirmation_message),
         trigger_id=trigger_id
     )
-"""
+
 @app.action("confirm_reschedule_3")
 def handle_some_action(ack, client, body, logger):
     ack()
@@ -131,7 +131,14 @@ def open_modal_reschedule_3(body, client, logger):
 def respond_to_slack_within_3_seconds(ack):
     ack()
 
-app.action("confirm_reschedule_3")(ack=respond_to_slack_within_3_seconds, lazy=[open_modal_reschedule_3])
+reschedule_action_ids = [
+    "confirm_reschedule_1",
+    "confirm_reschedule_2",
+    "confirm_reschedule_3"
+]
+
+for action_id in reschedule_action_ids:
+    app.action(action_id)(ack=respond_to_slack_within_3_seconds, lazy=[open_modal_reschedule_3])
 
 @app.view("confirmation_view")
 def handle_view_submission_events(ack, body, client, logger):
