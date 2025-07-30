@@ -1,10 +1,5 @@
 import os
 import json
-import requests
-from requests import Response
-import datetime
-from zoneinfo import ZoneInfo
-import re
 
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
@@ -19,7 +14,7 @@ load_dotenv()
 SLACK_APP_TOKEN= os.getenv("SLACK_APP_TOKEN")
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
-# SLACK_USER_TOKEN = os.getenv("SLACK_USER_TOKEN")
+CHANNEL_ID=os.getenv("CHANNEL_ID")
 
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
@@ -41,11 +36,11 @@ def get_view(private_metadata: dict, confirmation_message: str):
     return json.dumps(blocks)
 
 app.client.chat_postMessage(
-    channel="U08NY9QJZ34",
+    channel=CHANNEL_ID,
     blocks=get_block_message(),
     text="Message from Endpoint Engineering"
 )
-
+"""
 @app.action("confirm_date")
 def handle_some_action(ack, client, body, logger):
     ack()
@@ -122,6 +117,6 @@ def handle_view_submission_events(ack, body, client, logger):
         text=f"You've confirmed your Windows upgrade for {private_metadata["date"]}"
     )
 
-
 if __name__ == "__main__":      
     SocketModeHandler(app, SLACK_APP_TOKEN).start()
+"""
