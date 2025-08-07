@@ -2,3 +2,5 @@
 .venv
 push_to_github.sh
 responses/
+aws_slack_layer
+slack_layer.zip
