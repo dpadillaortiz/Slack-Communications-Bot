@@ -1,8 +1,6 @@
 import os
 import json
 import asyncio
-import datetime
-from zoneinfo import ZoneInfo
 
 from slack_bolt.async_app import AsyncApp
 from slack_sdk.errors import SlackApiError
@@ -17,26 +15,27 @@ load_dotenv()
 SLACK_APP_TOKEN= os.getenv("SLACK_APP_TOKEN")
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
-CHANNEL_ID=os.getenv("CHANNEL_ID")
 
 app = AsyncApp(
     token=SLACK_BOT_TOKEN,
     signing_secret=SLACK_SIGNING_SECRET
 )
 
-def get_todays_date() -> str:
-    """Returns today's date in the format %Y-%m-%d %I:%M:%S %p %Z."""
-    # Get the current datetime object
-    now = datetime.datetime.now()
-    # Convert to Pacific Time (Los Angeles)
-    pacific_timezone = ZoneInfo("America/Los_Angeles") 
-    now_aware = now.astimezone(pacific_timezone)
-    formatted_datetime = now_aware.strftime("%Y-%m-%d")
-    return formatted_datetime
-
-def get_block_message():
+def get_block_message(provided_schedules:dict):
+    message_md="*This is the message*"
     with open("block_kit.json",'r') as file:
         blocks = json.load(file)["blocks"]
+        blocks[1]["text"]["text"]=message_md
+        blocks[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
+
+        blocks[5]["text"]["text"]=provided_schedules["alternate_schedule_1"]
+        blocks[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
+
+        blocks[6]["text"]["text"]=provided_schedules["alternate_schedule_2"]
+        blocks[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
+
+        blocks[7]["text"]["text"]=provided_schedules["alternate_schedule_3"]
+        blocks[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
     return json.dumps(blocks)
 
 def get_view(private_metadata: dict, confirmation_message: str):
@@ -47,7 +46,6 @@ def get_view(private_metadata: dict, confirmation_message: str):
     return json.dumps(blocks)
 
 def get_shortcut(private_metadata: str):
-    todays_date = get_todays_date()
     with open('shortcut.json', 'r') as file:
         blocks = json.load(file)
         blocks["private_metadata"]=json.dumps(private_metadata)
@@ -118,14 +116,14 @@ async def send_windows_message(email: str, schedules: dict[str:str]):
         user_id = response["user"]["id"]
         await app.client.chat_postMessage(
             channel=user_id,
-            blocks=get_block_message(),
+            blocks=get_block_message(schedules),
             text="Message from Endpoint Engineering"
         )
     except SlackApiError as e:
         print(f"Failed for {email}: {e.response['error']}")
 
 async def message_multiple_users(emails: list[str], schedules:dict[str:str]):
-    await asyncio.gather(*(send_windows_message(email.strip()) for email in emails))
+    await asyncio.gather(*(send_windows_message(email.strip(), schedules) for email in emails))
 
 @app.view("windows_update_modal_view")
 async def handle_view_submission_events(ack, body, logger, view):
@@ -144,7 +142,7 @@ async def handle_view_submission_events(ack, body, logger, view):
         "alternate_schedule_3":view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
     }
 
-    await message_multiple_users(provided_emails)
+    await message_multiple_users(provided_emails, provided_schedules)
         
 
 # Entry point for async Socket Mode
