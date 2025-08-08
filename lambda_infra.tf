@@ -59,22 +59,22 @@ resource "aws_iam_role_policy" "allow_self_invoke" {
 ############################
 # 1a. Slack Secrets in Secrets Manager
 ############################
-resource "aws_secretsmanager_secret" "slack_bot_token" {
-  name = "/slack/windows_updater_app/bot_token"
+resource "aws_secretsmanager_secret" "windows_updater_bot_token_value" {
+  name = "/slack/windows_updater_app/aws_windows_bot_token"
 }
 
-resource "aws_secretsmanager_secret_version" "slack_bot_token_value" {
-  secret_id     = aws_secretsmanager_secret.slack_bot_token.id
-  secret_string = var.slack_bot_token
+resource "aws_secretsmanager_secret_version" "windows_updater_bot_token_value" {
+  secret_id     = aws_secretsmanager_secret.windows_updater_bot_token_value.id
+  secret_string = var.aws_windows_slack_bot_token
 }
 
-resource "aws_secretsmanager_secret" "slack_signing_secret" {
-  name = "/slack/windows_updater_app/signing_secret"
+resource "aws_secretsmanager_secret" "windows_updater_signing_secret" {
+  name = "/slack/windows_updater_app/aws_windows_signing_secret"
 }
 
-resource "aws_secretsmanager_secret_version" "slack_signing_secret_value" {
-  secret_id     = aws_secretsmanager_secret.slack_signing_secret.id
-  secret_string = var.slack_signing_secret
+resource "aws_secretsmanager_secret_version" "windows_updater_signing_secret" {
+  secret_id     = aws_secretsmanager_secret.windows_updater_signing_secret.id
+  secret_string = var.aws_windows_slack_signing_secret
 }
 
 ############################
@@ -95,8 +95,8 @@ resource "aws_lambda_function" "slack_handler" {
 
   environment {
     variables = {
-      SLACK_BOT_TOKEN       = "{{resolve:secretsmanager:/slack/windows_updater_app/bot_token}}"
-      SLACK_SIGNING_SECRET  = "{{resolve:secretsmanager:/slack/windows_updater_app/signing_secret}}"
+      SLACK_BOT_TOKEN       = "{{resolve:secretsmanager:/slack/windows_updater_app/aws_windows_bot_token}}"
+      SLACK_SIGNING_SECRET  = "{{resolve:secretsmanager:/slack/windows_updater_app/aws_windows_signing_secret}}"
     }
   }
 }
@@ -140,12 +140,12 @@ resource "aws_lambda_permission" "allow_apigw" {
 ############################
 # 4. Variables for Secrets
 ############################
-variable "slack_bot_token" {
+variable "aws_windows_slack_bot_token" {
   type        = string
   description = "Slack bot token (xoxb-...)"
 }
 
-variable "slack_signing_secret" {
+variable "aws_windows_slack_signing_secret" {
   type        = string
   description = "Slack signing secret"
 }
@@ -172,7 +172,7 @@ output "events_api_url" {
 ############################
 resource "aws_lambda_layer_version" "slack_app_dependencies" {
   layer_name               = "slack-bolt-layer"
-  filename                 = "./slack_layer.zip"
+  filename                 = "./python.zip"
   compatible_runtimes      = ["python3.13"]
   compatible_architectures = ["arm64"]  # match your function's arch
   description              = "Slack Bolt + SDK + aiohttp deps"
