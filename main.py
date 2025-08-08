@@ -1,5 +1,6 @@
 import os
 import json
+from copy import deepcopy
 
 from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
@@ -13,6 +14,16 @@ load_dotenv()
 
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+
+# Top-level (runs once per cold start)
+with open("modal.json", "r") as f:
+    MODAL_TEMPLATE = json.load(f)
+
+with open("block_kit.json", "r") as f:
+    BLOCKS_TEMPLATE = json.load(f)
+
+with open("shortcut.json", "r") as f:
+    SHORTCUT_TEMPLATE = json.load(f)
 
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
@@ -34,33 +45,35 @@ def get_block_message(provided_schedules:dict):
     - The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.
     - *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade.
     '''
-    with open("block_kit.json",'r') as file:
-        blocks = json.load(file)["blocks"]
-        blocks[1]["text"]["text"]=message_md
-        blocks[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
+    deep_copied_blocks = json.loads(json.dumps(BLOCKS_TEMPLATE))
+    #blocks = json.load(file)["blocks"]
+    deep_copied_blocks[1]["text"]["text"]=message_md
+    deep_copied_blocks[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
 
-        blocks[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
-        blocks[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
+    deep_copied_blocks[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
+    deep_copied_blocks[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
 
-        blocks[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
-        blocks[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
+    deep_copied_blocks[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
+    deep_copied_blocks[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
 
-        blocks[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
-        blocks[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
-    return json.dumps(blocks)
+    deep_copied_blocks[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
+    deep_copied_blocks[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
+    return deep_copied_blocks
 
 def get_view(private_metadata: dict, confirmation_message: str):
-    with open('modal.json', 'r') as file:
-        blocks = json.load(file)
-        blocks["blocks"][2]["text"]["text"]=confirmation_message
-        blocks["private_metadata"]=json.dumps(private_metadata)
-    return json.dumps(blocks)
+    deep_copied_modal = json.loads(json.dumps(MODAL_TEMPLATE))
+    # with open('modal.json', 'r') as file:
+        # blocks = json.load(file)
+    deep_copied_modal["blocks"][2]["text"]["text"]=confirmation_message
+    deep_copied_modal["private_metadata"]=json.dumps(private_metadata)
+    return deep_copied_modal
 
 def get_shortcut(private_metadata: str):
-    with open('shortcut.json', 'r') as file:
-        blocks = json.load(file)
-        blocks["private_metadata"]=json.dumps(private_metadata)
-    return json.dumps(blocks)
+    deep_copied_shortcut = json.loads(json.dumps(SHORTCUT_TEMPLATE))
+    # with open('shortcut.json', 'r') as file:
+        # blocks = json.load(file)
+    deep_copied_shortcut["private_metadata"]=json.dumps(private_metadata)
+    return deep_copied_shortcut
 
 def respond_to_slack_within_3_seconds(ack):
     ack()
@@ -121,7 +134,7 @@ def handle_view_submission_events(body, client, logger):
         client.chat_update(
             channel=private_metadata["user_id"],
             ts=private_metadata["message_ts"],
-            text=f"You have selected the week of {private_metadata['date']} for your Windows 11 24H2 upgrade.\nClick `Confirm` to finalize this schedule."
+            text=f"You have selected the week of {private_metadata['date']} for your Windows 11 24H2 upgrade."
         )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
@@ -167,6 +180,6 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
 app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_shortcut_submission_events])
 
 # AWS Lambda entrypoint
-def handler(event, context):
+def lambda_handler(event, context):
     slack_handler = SlackRequestHandler(app=app)
     return slack_handler.handle(event, context)
