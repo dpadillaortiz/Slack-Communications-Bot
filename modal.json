@@ -5,7 +5,7 @@
 		"text": "Confirm",
 		"emoji": true
 	},
-    "private_metadata":"",
+	"private_metadata": "",
 	"close": {
 		"type": "plain_text",
 		"text": "Go Back",
@@ -13,10 +13,10 @@
 	},
 	"title": {
 		"type": "plain_text",
-		"text": ":spiral_calendar_pad: Confirm Your Upgrade Schedule",
+		"text": "Confirm Your Schedule",
 		"emoji": true
 	},
-    "callback_id":"confirmation_view",
+	"callback_id": "confirmation_view",
 	"blocks": [
 		{
 			"type": "header",
@@ -32,9 +32,8 @@
 			"type": "section",
 			"block_id": "confirmation_message",
 			"text": {
-				"type": "plain_text",
-				"text": "confirmation_message",
-				"emoji": true
+				"type": "mrkdwn",
+				"text": "confirmation_message"
 			}
 		}
 	]
