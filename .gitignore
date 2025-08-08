@@ -4,3 +4,8 @@ push_to_github.sh
 responses/
 aws_slack_layer
 slack_layer.zip
+terraform.tfvars
+terraform.tfstate*
+tf_windows_updater.txt
+.*
+misc
