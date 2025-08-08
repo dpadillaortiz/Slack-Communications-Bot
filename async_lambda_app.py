@@ -24,19 +24,30 @@ app = AsyncApp(
 )
 
 def get_block_message(provided_schedules:dict):
-    message_md="*This is the message*"
+    message_md=f'''
+    Time to Schedule Your Windows 11 24H2 Upgrade\n
+    Hi Workmate :wave:\n
+    To keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to Windows 11 24H2. 
+    We have tentatively scheduled yours for the week of {provided_schedules["tentative_schedule"]}.\n
+    You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n
+    *What to Expect:*
+    - The upgrade will download in the background with no interruption to your work.
+    - You'll receive a prompt to restart your device once the download is complete.
+    - The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.
+    - *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade.
+    '''
     with open("block_kit.json",'r') as file:
         blocks = json.load(file)["blocks"]
         blocks[1]["text"]["text"]=message_md
         blocks[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
 
-        blocks[5]["text"]["text"]=provided_schedules["alternate_schedule_1"]
+        blocks[5]["text"]["text"]="Upgrade the week of " + provided_schedules["alternate_schedule_1"]
         blocks[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
 
-        blocks[6]["text"]["text"]=provided_schedules["alternate_schedule_2"]
+        blocks[6]["text"]["text"]="Upgrade the week of " + provided_schedules["alternate_schedule_2"]
         blocks[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
 
-        blocks[7]["text"]["text"]=provided_schedules["alternate_schedule_3"]
+        blocks[7]["text"]["text"]="Upgrade the week of " + provided_schedules["alternate_schedule_3"]
         blocks[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
     return json.dumps(blocks)
 
@@ -65,7 +76,7 @@ async def handle_some_action(client, body, logger):
             "message_ts":body["message"]["ts"],
             "user_id":body["container"]["channel_id"]
         }
-        confirmation_message=f"I am scheduling my Windows upgrade on {body["actions"][0]["value"]}"
+        confirmation_message=f'I am scheduling my Windows upgrade on {body["actions"][0]["value"]}'
         await client.views_open(
             view=get_view(private_metadata, confirmation_message),
             trigger_id=trigger_id
@@ -111,7 +122,7 @@ async def handle_view_submission_events(body, client, logger):
         await client.chat_update(
             channel=private_metadata["user_id"],
             ts=private_metadata["message_ts"],
-            text=f"You've confirmed your Windows upgrade for {private_metadata["date"]}"
+            text=f"You have selected the week of {private_metadata['date']} for your Windows 11 24H2 upgrade.\nClick `Confirm` to finalize this schedule."
         )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
@@ -128,11 +139,11 @@ async def handle_global_shortcut(body, client, logger):
 app.shortcut("windows_update_callbackid")(ack=respond_to_slack_within_3_seconds, lazy=[handle_global_shortcut])
 
 
-async def send_windows_message(email: str, schedules: dict[str:str]):
+async def send_windows_message(client, email: str, schedules: dict):
     try:
-        response = await app.client.users_lookupByEmail(email=email)
+        response = await client.users_lookupByEmail(email=email)
         user_id = response["user"]["id"]
-        await app.client.chat_postMessage(
+        await client.chat_postMessage(
             channel=user_id,
             blocks=get_block_message(schedules),
             text="Message from Endpoint Engineering"
@@ -140,12 +151,11 @@ async def send_windows_message(email: str, schedules: dict[str:str]):
     except SlackApiError as e:
         print(f"Failed for {email}: {e.response['error']}")
 
-async def message_multiple_users(emails: list[str], schedules:dict[str:str]):
-    await asyncio.gather(*(send_windows_message(email.strip(), schedules) for email in emails))
+async def message_multiple_users(client, emails: list[str], schedules:dict[str:str]):
+    await asyncio.gather(*(send_windows_message(client, email.strip(), schedules) for email in emails))
 
 
-async def handle_view_submission_events(ack, body, logger, view):
-    await ack()
+async def handle_shortcut_submission_events(ack, body, logger, view):
     logger.info(body)
     provided_emails=view["state"]["values"]["provided_emails"]["provided_emails-action"]["value"].split(",")
 
@@ -158,7 +168,7 @@ async def handle_view_submission_events(ack, body, logger, view):
 
     await message_multiple_users(provided_emails, provided_schedules)
 
-app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_view_submission_events])
+app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_shortcut_submission_events])
 
 async def handler(event, context):
     return await AsyncSlackRequestHandler(app).handle(event, context)

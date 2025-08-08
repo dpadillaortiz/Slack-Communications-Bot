@@ -4,14 +4,14 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "You're scheduled for a Windows upgrade on 8/1/2025"
+				"text": "Time to Schedule Your Windows 11 24H2 Upgrade"
 			}
 		},
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Please confirm your date or select a new time from below*"
+				"text": "screen_1_message"
 			}
 		},
 		{
@@ -24,10 +24,10 @@
 					"text": {
 						"type": "plain_text",
 						"emoji": true,
-						"text": "Confirm"
+						"text": "This week works for me"
 					},
 					"style": "primary",
-					"value": "8/1/2025"
+					"value": "confirm_date-value"
 				}
 			]
 		},
@@ -38,7 +38,7 @@
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Propose a new time:*"
+				"text": "*Need a different time?*"
 			}
 		},
 		{
@@ -46,7 +46,7 @@
 			"block_id": "alternate_1",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Upgrade Windows on 8/10/25*"
+				"text": "alternate_1"
 			},
 			"accessory": {
 				"type": "button",
@@ -56,7 +56,7 @@
 					"emoji": true,
 					"text": "Choose"
 				},
-				"value": "8/10/25"
+				"value": "alternate_1-date"
 			}
 		},
 		{
@@ -64,7 +64,7 @@
 			"block_id": "alternate_2",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Upgrade Windows on 8/20/25*"
+				"text": "alternate_2"
 			},
 			"accessory": {
 				"type": "button",
@@ -74,7 +74,7 @@
 					"emoji": true,
 					"text": "Choose"
 				},
-				"value": "8/20/25"
+				"value": "alternate_2-date"
 			}
 		},
 		{
@@ -82,7 +82,7 @@
 			"block_id": "alternate_3",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Upgrade Windows on 8/30/25*"
+				"text": "alternate_3"
 			},
 			"accessory": {
 				"type": "button",
@@ -92,7 +92,7 @@
 					"emoji": true,
 					"text": "Choose"
 				},
-				"value": "8/30/25"
+				"value": "alternate_3-date"
 			}
 		}
 	]

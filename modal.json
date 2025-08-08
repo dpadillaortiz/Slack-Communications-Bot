@@ -2,18 +2,18 @@
 	"type": "modal",
 	"submit": {
 		"type": "plain_text",
-		"text": "Submit",
+		"text": "Confirm",
 		"emoji": true
 	},
     "private_metadata":"",
 	"close": {
 		"type": "plain_text",
-		"text": "Cancel",
+		"text": "Go Back",
 		"emoji": true
 	},
 	"title": {
 		"type": "plain_text",
-		"text": "Schedule Windows Upgrade",
+		"text": ":spiral_calendar_pad: Confirm Your Upgrade Schedule",
 		"emoji": true
 	},
     "callback_id":"confirmation_view",
@@ -22,7 +22,7 @@
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": ":tada: You're all set! This is your schedule summary."
+				"text": ":point_right: Please review your selection below."
 			}
 		},
 		{
@@ -33,7 +33,7 @@
 			"block_id": "confirmation_message",
 			"text": {
 				"type": "plain_text",
-				"text": "This is a plain text section block.",
+				"text": "confirmation_message",
 				"emoji": true
 			}
 		}

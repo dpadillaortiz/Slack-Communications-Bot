@@ -1,18 +1,40 @@
-display_information:
-  name: Endpoint Engineering
-  description: dwwd
-  background_color: "#000000"
-features:
-  bot_user:
-    display_name: SC Bot
-    always_online: false
-oauth_config:
-  scopes:
-    bot:
-      - chat:write
-settings:
-  interactivity:
-    is_enabled: true
-  org_deploy_enabled: true
-  socket_mode_enabled: true
-  token_rotation_enabled: false
+{
+    "display_information": {
+        "name": "Windows Update",
+        "description": "dwwd",
+        "background_color": "#000000"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "Windows Update",
+            "always_online": false
+        },
+        "shortcuts": [
+            {
+                "name": "Send Windows Update msg",
+                "type": "global",
+                "callback_id": "windows_update_callbackid",
+                "description": "sends windows update messsage to provided users"
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "chat:write",
+                "commands",
+                "users:read.email",
+                "users:read"
+            ]
+        }
+    },
+    "settings": {
+        "interactivity": {
+            "is_enabled": true,
+            "request_url": "https://enter/your/request/url"
+        },
+        "org_deploy_enabled": true,
+        "socket_mode_enabled": true,
+        "token_rotation_enabled": false
+    }
+}
