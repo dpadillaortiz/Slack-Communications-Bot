@@ -16,16 +16,6 @@ SLACK_APP_TOKEN= os.getenv("SLACK_APP_TOKEN")
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 
-# Top-level (runs once per cold start)
-with open("modal.json", "r") as f:
-    MODAL_TEMPLATE = json.load(f)
-
-with open("block_kit.json", "r") as f:
-    BLOCKS_TEMPLATE = json.load(f)
-
-with open("shortcut.json", "r") as f:
-    SHORTCUT_TEMPLATE = json.load(f)
-
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
 app = App(
