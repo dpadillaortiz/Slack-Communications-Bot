@@ -1,6 +1,6 @@
 import os
 import json
-from copy import deepcopy
+import ui_templates
 
 from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
@@ -15,16 +15,6 @@ load_dotenv()
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 
-# Top-level (runs once per cold start)
-with open("modal.json", "r") as f:
-    MODAL_TEMPLATE = json.load(f)
-
-with open("block_kit.json", "r") as f:
-    BLOCKS_TEMPLATE = json.load(f)
-
-with open("shortcut.json", "r") as f:
-    SHORTCUT_TEMPLATE = json.load(f)
-
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
 app = App(
@@ -33,52 +23,10 @@ app = App(
     process_before_response=True
 )
 
-def get_block_message(provided_schedules:dict):
-    message_md=f'''
-    Hi Workmate :wave:\n
-    To keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to Windows 11 24H2. 
-    We have tentatively scheduled yours for the week of {provided_schedules["tentative_schedule"]}.\n
-    You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n
-    *What to Expect:*
-    - The upgrade will download in the background with no interruption to your work.
-    - You'll receive a prompt to restart your device once the download is complete.
-    - The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.
-    - *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade.
-    '''
-    deep_copied_blocks = json.loads(json.dumps(BLOCKS_TEMPLATE))
-    #blocks = json.load(file)["blocks"]
-    deep_copied_blocks[1]["text"]["text"]=message_md
-    deep_copied_blocks[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
-
-    deep_copied_blocks[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
-    deep_copied_blocks[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
-
-    deep_copied_blocks[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
-    deep_copied_blocks[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
-
-    deep_copied_blocks[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
-    deep_copied_blocks[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
-    return deep_copied_blocks
-
-def get_view(private_metadata: dict, confirmation_message: str):
-    deep_copied_modal = json.loads(json.dumps(MODAL_TEMPLATE))
-    # with open('modal.json', 'r') as file:
-        # blocks = json.load(file)
-    deep_copied_modal["blocks"][2]["text"]["text"]=confirmation_message
-    deep_copied_modal["private_metadata"]=json.dumps(private_metadata)
-    return deep_copied_modal
-
-def get_shortcut(private_metadata: str):
-    deep_copied_shortcut = json.loads(json.dumps(SHORTCUT_TEMPLATE))
-    # with open('shortcut.json', 'r') as file:
-        # blocks = json.load(file)
-    deep_copied_shortcut["private_metadata"]=json.dumps(private_metadata)
-    return deep_copied_shortcut
-
 def respond_to_slack_within_3_seconds(ack):
     ack()
 
-def handle_some_action(client, body, logger):
+def handle_confirm_tentative(client, body, logger):
     try:
         logger.info(body)
         trigger_id=body["trigger_id"]
@@ -89,31 +37,27 @@ def handle_some_action(client, body, logger):
         }
         confirmation_message=f':spiral_calendar_pad: I am scheduling my Windows upgrade on *{body["actions"][0]["value"]}*.'
         client.views_open(
-            view=get_view(private_metadata, confirmation_message),
+            view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
             trigger_id=trigger_id
         )
     except SlackApiError as e:
         logger.info(body)
         logger.error(f"Failed to open modal: {e}")
-app.action("confirm_date")(ack=respond_to_slack_within_3_seconds, lazy=[handle_some_action])
+app.action("confirm_date")(ack=respond_to_slack_within_3_seconds, lazy=[handle_confirm_tentative])
 
-def open_modal_reschedule(body, client, logger):
+def handle_alternative_choice(body, client, logger):
     try:
         logger.info(body)
-
         trigger_id = body["trigger_id"]
         selected_date = body["actions"][0]["value"]
-
         private_metadata = {
             "date": selected_date,
             "message_ts": body["message"]["ts"],
             "user_id": body["container"]["channel_id"]
         }
-
-        confirmation_message = f"I am scheduling my Windows upgrade on *{selected_date}*"
-
+        confirmation_message = f":spiral_calendar_pad: I am scheduling my Windows upgrade on *{selected_date}*"
         client.views_open(
-            view=get_view(private_metadata, confirmation_message),
+            view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
             trigger_id=trigger_id
         )
     except SlackApiError as e:
@@ -125,7 +69,7 @@ reschedule_action_ids = [
     "confirm_reschedule_3"
 ]
 for action_id in reschedule_action_ids:
-    app.action(action_id)(ack=respond_to_slack_within_3_seconds, lazy=[open_modal_reschedule])
+    app.action(action_id)(ack=respond_to_slack_within_3_seconds, lazy=[handle_alternative_choice])
 
 def handle_view_submission_events(body, client, logger):
     try:
@@ -134,7 +78,7 @@ def handle_view_submission_events(body, client, logger):
         client.chat_update(
             channel=private_metadata["user_id"],
             ts=private_metadata["message_ts"],
-            text=f"You have selected the week of {private_metadata['date']} for your Windows 11 24H2 upgrade."
+            text=f"You have selected the week of {private_metadata['date']} for your {private_metadata['windows_version']} upgrade."
         )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
@@ -144,42 +88,46 @@ def handle_global_shortcut(body, client, logger):
     try:
         client.views_open(
             trigger_id=body["trigger_id"],
-            view=get_shortcut("private_metadata")
+            view=ui_templates.build_shortcut_modal("private_metadata")
         )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
 app.shortcut("windows_update_callbackid")(ack=respond_to_slack_within_3_seconds, lazy=[handle_global_shortcut])
 
-def send_windows_message(client, email: str, schedules: dict[str:str]):
+def send_windows_message(client, email: str, schedules: dict[str:str], windows_version:str):
     try:
         response = app.client.users_lookupByEmail(email=email)
         user_id = response["user"]["id"]
         client.chat_postMessage(
             channel=user_id,
-            blocks=get_block_message(schedules),
+            blocks=ui_templates.build_blocks_message(schedules, windows_version),
             text="Message from Endpoint Engineering"
         )
     except SlackApiError as e:
         print(f"Failed for {email}: {e.response['error']}")
 
-def message_multiple_users(client, emails: list[str], schedules:dict[str:str]):
-    for email in emails: send_windows_message(client, email.strip(), schedules) 
+def message_multiple_users(client, emails: list[str], schedules:dict[str:str], windows_version:str):
+    for email in emails: send_windows_message(client, email.strip(), schedules, windows_version) 
+
 
 def handle_shortcut_submission_events(ack, body, client, logger, view):
     ack()
     logger.info(body)
+    windows_version=view["state"]["values"]["windows_version"]["windows_version-action"]["value"]
+    ui_templates.update_confirmation_template({"windows_version":windows_version})
     provided_emails=view["state"]["values"]["provided_emails"]["provided_emails-action"]["value"].split(",")
     provided_schedules={
+        "windows_version":view["state"]["values"]["windows_version"]["windows_version-action"]["value"],
         "tentative_schedule": view["state"]["values"]["tentative_schedule"]["tentative_schedule-action"]["value"],
         "alternate_schedule_1": view["state"]["values"]["alternate_schedule_1"]["alternate_schedule_1-action"]["value"],
         "alternate_schedule_2": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
         "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
     }
-    message_multiple_users(client, provided_emails, provided_schedules)
+    message_multiple_users(client, provided_emails, provided_schedules, windows_version)
 
 app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_shortcut_submission_events])
 
 # AWS Lambda entrypoint
-def lambda_handler(event, context):
+def handler(event, context):
     slack_handler = SlackRequestHandler(app=app)
     return slack_handler.handle(event, context)
