@@ -4,7 +4,7 @@
 		"text": "My App",
 		"emoji": true
 	},
-    "callback_id":"windows_update_modal_view",
+	"callback_id": "windows_update_modal_view",
 	"submit": {
 		"type": "plain_text",
 		"text": "Submit",
@@ -20,7 +20,20 @@
 	"blocks": [
 		{
 			"type": "input",
-            "block_id":"provided_emails",
+			"block_id": "windows_version",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "windows_version-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Windows Version",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "provided_emails",
 			"element": {
 				"type": "plain_text_input",
 				"multiline": true,
