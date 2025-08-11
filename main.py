@@ -20,6 +20,8 @@ TENTATIVE_SECTION=os.getenv("TENTATIVE_SECTION")
 ALT_SECTION_1=os.getenv("ALT_SECTION_1")
 ALT_SECTION_2=os.getenv("ALT_SECTION_2")
 ALT_SECTION_3=os.getenv("ALT_SECTION_3")
+ALLOWED_USERS=os.getenv("ALLOWED_USERS").split(",")
+
 
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
@@ -122,10 +124,18 @@ app.view("confirmation_view")(ack=respond_to_slack_within_3_seconds, lazy=[handl
 
 def handle_global_shortcut(body, client, logger):
     try:
-        client.views_open(
-            trigger_id=body["trigger_id"],
-            view=ui_templates.build_shortcut_modal("private_metadata")
-        )
+        user_id = body["user"]["id"]
+        if user_id not in ALLOWED_USERS:
+            client.chat_postMessage(
+                channel=user_id,
+                text="You’re not authorized to use this shortcut. Contact #ask_bt if this seems wrong."
+            )
+            logger.info(f"Blocked {user_id}")
+        else:
+            client.views_open(
+                trigger_id=body["trigger_id"],
+                view=ui_templates.build_shortcut_modal("private_metadata")
+            )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
 app.shortcut("windows_update_callbackid")(ack=respond_to_slack_within_3_seconds, lazy=[handle_global_shortcut])
@@ -161,7 +171,6 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
     }
     ui_templates.update_confirmation_template(provided_schedules)
     message_multiple_users(client, provided_emails, provided_schedules, windows_version)
-
 app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_shortcut_submission_events])
 
 # AWS Lambda entrypoint

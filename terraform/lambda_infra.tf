@@ -177,6 +177,11 @@ variable "ALT_SECTION_3" {
   description = "section id"
 }
 
+variable "ALLOWED_USERS" {
+  type        = string
+  description = "list of allowed user slack ids"
+}
+
 ############################
 # 5. Log retention (CloudWatch)
 ############################
