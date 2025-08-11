@@ -1,5 +1,7 @@
 import os
 import json
+import logging
+from dotenv import load_dotenv
 # custom py modules
 import ui_templates
 import aws_secrets
@@ -8,14 +10,11 @@ from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 from slack_sdk.errors import SlackApiError
 
-import logging
 logging.basicConfig(level=logging.DEBUG)
-
-from dotenv import load_dotenv
 load_dotenv()
 
-SLACK_SIGNING_SECRET = aws_secrets.get_bot_token()
-SLACK_BOT_TOKEN = aws_secrets.get_signing_secret()
+SLACK_SIGNING_SECRET = aws_secrets.get_signing_secret()
+SLACK_BOT_TOKEN = aws_secrets.get_bot_token()
 SLACK_CANVAS = os.getenv("SLACK_CANVAS")
 TENTATIVE_SECTION=os.getenv("TENTATIVE_SECTION")
 ALT_SECTION_1=os.getenv("ALT_SECTION_1")
