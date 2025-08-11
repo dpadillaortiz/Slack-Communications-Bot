@@ -9,3 +9,4 @@ terraform.tfstate*
 tf_windows_updater.txt
 .*
 misc
+__pycache__
