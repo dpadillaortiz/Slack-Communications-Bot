@@ -15,6 +15,12 @@ load_dotenv()
 SLACK_APP_TOKEN= os.getenv("SLACK_APP_TOKEN")
 SLACK_SIGNING_SECRET = os.getenv("SLACK_SIGNING_SECRET")
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+SLACK_CANVAS = os.getenv("SLACK_CANVAS")
+TENTATIVE_SECTION=os.getenv("TENTATIVE_SECTION")
+ALT_SECTION_1=os.getenv("ALT_SECTION_1")
+ALT_SECTION_2=os.getenv("ALT_SECTION_2")
+ALT_SECTION_3=os.getenv("ALT_SECTION_3")
+
 
 # Initializes your app with your bot token and signing secret
 # https://api.slack.com/authentication/verifying-requests-from-slack
@@ -34,12 +40,12 @@ def handle_confirm_tentative(client, body, logger):
         private_metadata={
             "date":body["actions"][0]["value"],
             "message_ts":body["message"]["ts"],
-            "user_id":body["container"]["channel_id"]
+            "user_id":body["container"]["channel_id"],
+            "caller_id":body["message"]["user"]
         }
         confirmation_message=f':spiral_calendar_pad: I am scheduling my Windows upgrade on *{body["actions"][0]["value"]}*.'
         client.views_open(
             view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
-            #view=get_view(private_metadata, confirmation_message),
             trigger_id=trigger_id
         )
     except SlackApiError as e:
@@ -55,11 +61,11 @@ def handle_alternative_choice(body, client, logger):
         private_metadata = {
             "date": selected_date,
             "message_ts": body["message"]["ts"],
-            "user_id": body["container"]["channel_id"]
+            "user_id": body["container"]["channel_id"],
+            "caller_id":body["message"]["user"]
         }
         confirmation_message = f":spiral_calendar_pad: I am scheduling my Windows upgrade on *{selected_date}*"
         client.views_open(
-            # view=get_view(private_metadata, confirmation_message),
             view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
             trigger_id=trigger_id
         )
@@ -83,6 +89,34 @@ def handle_view_submission_events(body, client, logger):
             ts=private_metadata["message_ts"],
             text=f"You have selected the week of {private_metadata['date']} for your {private_metadata['windows_version']} upgrade."
         )
+        if private_metadata['date'] == private_metadata["tentative_schedule"]:
+            client.canvases_edit(
+                canvas_id=SLACK_CANVAS,
+                changes=[{"operation":"insert_after",
+                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
+                        "section_id":f"{TENTATIVE_SECTION}"}]
+            )
+        elif private_metadata['date'] == private_metadata["alternate_schedule_1"]:
+            client.canvases_edit(
+                canvas_id=SLACK_CANVAS,
+                changes=[{"operation":"insert_after",
+                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
+                        "section_id":f"{ALT_SECTION_1}"}]
+            )
+        elif private_metadata['date'] == private_metadata["alternate_schedule_2"]:
+            client.canvases_edit(
+                canvas_id=SLACK_CANVAS,
+                changes=[{"operation":"insert_after",
+                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
+                        "section_id":f"{ALT_SECTION_2}"}]
+            )
+        elif private_metadata['date'] == private_metadata["alternate_schedule_3"]:
+            client.canvases_edit(
+                canvas_id=SLACK_CANVAS,
+                changes=[{"operation":"insert_after",
+                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
+                        "section_id":f"{ALT_SECTION_3}"}]
+            )
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
 app.view("confirmation_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_view_submission_events])
@@ -91,7 +125,6 @@ def handle_global_shortcut(body, client, logger):
     try:
         client.views_open(
             trigger_id=body["trigger_id"],
-            #view=get_shortcut("private_metadata")
             view=ui_templates.build_shortcut_modal("private_metadata")
         )
     except SlackApiError as e:
@@ -104,10 +137,10 @@ def send_windows_message(client, email: str, schedules: dict[str:str], windows_v
         user_id = response["user"]["id"]
         client.chat_postMessage(
             channel=user_id,
-            #blocks=get_block_message(schedules),
             blocks=ui_templates.build_blocks_message(schedules, windows_version),
             text="Message from Endpoint Engineering"
         )
+        ui_templates.update_confirmation_template({"user_email":email})
     except SlackApiError as e:
         print(f"Failed for {email}: {e.response['error']}")
 
@@ -119,7 +152,6 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
     ack()
     logger.info(body)
     windows_version=view["state"]["values"]["windows_version"]["windows_version-action"]["value"]
-    ui_templates.update_confirmation_template({"windows_version":windows_version})
     provided_emails=view["state"]["values"]["provided_emails"]["provided_emails-action"]["value"].split(",")
     provided_schedules={
         "windows_version":view["state"]["values"]["windows_version"]["windows_version-action"]["value"],
@@ -128,6 +160,7 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
         "alternate_schedule_2": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
         "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
     }
+    ui_templates.update_confirmation_template(provided_schedules)
     message_multiple_users(client, provided_emails, provided_schedules, windows_version)
 
 app.view("windows_update_modal_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_shortcut_submission_events])
