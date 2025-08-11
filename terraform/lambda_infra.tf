@@ -183,7 +183,7 @@ variable "ALT_SECTION_3" {
 
 variable "ALLOWED_USERS" {
   type        = string
-  description = "list of allowed user slack ids"
+  description = "list of allowed user slack ids e.g. user_id_1,user_id_2,....,user_id_n"
 }
 
 ############################
