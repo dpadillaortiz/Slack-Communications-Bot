@@ -9,7 +9,7 @@ MODAL_CONFIRMATION_TEMPLATE: Dict[str, Any] = {
 		"text": "Confirm",
 		"emoji": True
 	},
-	"private_metadata": "",
+	"private_metadata": False,
 	"close": {
 		"type": "plain_text",
 		"text": "Go Back",
@@ -62,7 +62,7 @@ SHORTCUT_MODAL_TEMPLATE: Dict[str, Any] = {
 		"text": "Cancel",
 		"emoji": True
 	},
-	"private_metadata": "private_metadata",
+	"private_metadata": False,
 	"blocks": [
 		{
 			"type": "input",
@@ -247,8 +247,10 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 }
 
 def update_confirmation_template(private_metadata:dict):
-    MODAL_CONFIRMATION_TEMPLATE["private_metadata"] = private_metadata
-    print(MODAL_CONFIRMATION_TEMPLATE)
+	if MODAL_CONFIRMATION_TEMPLATE["private_metadata"] == False:
+		MODAL_CONFIRMATION_TEMPLATE["private_metadata"] = private_metadata
+	else:
+		MODAL_CONFIRMATION_TEMPLATE["private_metadata"].update(private_metadata)
 
 def build_confirmation_modal(private_metadata: dict, confirmation_message: str):
     print(MODAL_CONFIRMATION_TEMPLATE)
@@ -272,7 +274,7 @@ def build_shortcut_modal(private_metadata: str):
     return shortcut_modal
 
 def build_blocks_message(provided_schedules:dict, windows_version:str):
-	screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to {windows_version}. We have tentatively scheduled yours for the week of {provided_schedules['tentative_schedule']}.\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
+	screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to *{windows_version}*. We have tentatively scheduled yours for the week of *{provided_schedules['tentative_schedule']}*.\n\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
 	blocks_message = deepcopy(BLOCK_MESSAGE_TEMPLATE)["blocks"]
 	blocks_message[0]["text"]["text"]=f"Time to Schedule Your {windows_version} Upgrade"
 	blocks_message[1]["text"]["text"]=screen_1_message
