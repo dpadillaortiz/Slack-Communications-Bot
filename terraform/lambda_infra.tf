@@ -100,6 +100,10 @@ resource "aws_lambda_function" "slack_handler" {
       ALT_SECTION_1         = var.ALT_SECTION_1
       ALT_SECTION_2         = var.ALT_SECTION_2
       ALT_SECTION_3         = var.ALT_SECTION_3
+      ALLOWED_USERS         = var.ALLOWED_USERS
+      bot_token_secret_name = aws_secretsmanager_secret.windows_updater_bot_token_value.name
+      signing_secret_name  = aws_secretsmanager_secret.windows_updater_signing_secret.name
+
     }
   }
 }
