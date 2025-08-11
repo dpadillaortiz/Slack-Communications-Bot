@@ -83,7 +83,7 @@ resource "aws_secretsmanager_secret_version" "windows_updater_signing_secret" {
 resource "aws_lambda_function" "slack_handler" {
   function_name = "slack_windows_updater"
   role          = aws_iam_role.lambda_exec_role.arn
-  handler       = "async_lambda_app.handler"
+  handler       = "main.handler"
   runtime       = "python3.11"
   timeout       = 10
   memory_size = 512
@@ -95,8 +95,11 @@ resource "aws_lambda_function" "slack_handler" {
 
   environment {
     variables = {
-      SLACK_BOT_TOKEN       = "{{resolve:secretsmanager:/slack/windows_updater_app/aws_windows_bot_token}}"
-      SLACK_SIGNING_SECRET  = "{{resolve:secretsmanager:/slack/windows_updater_app/aws_windows_signing_secret}}"
+      SLACK_CANVAS          = var.SLACK_CANVAS
+      TENTATIVE_SECTION     = var.TENTATIVE_SECTION
+      ALT_SECTION_1         = var.ALT_SECTION_1
+      ALT_SECTION_2         = var.ALT_SECTION_2
+      ALT_SECTION_3         = var.ALT_SECTION_3
     }
   }
 }
@@ -150,6 +153,29 @@ variable "aws_windows_slack_signing_secret" {
   description = "Slack signing secret"
 }
 
+variable "SLACK_CANVAS" {
+  type        = string
+  description = "Canvas id"
+}
+
+variable "TENTATIVE_SECTION" {
+  type        = string
+  description = "section id"
+}
+variable "ALT_SECTION_1" {
+  type        = string
+  description = "section id"
+}
+
+variable "ALT_SECTION_2" {
+  type        = string
+  description = "section id"
+}
+
+variable "ALT_SECTION_3" {
+  type        = string
+  description = "section id"
+}
 
 ############################
 # 5. Log retention (CloudWatch)
