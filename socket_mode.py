@@ -1,6 +1,8 @@
 import os
 import json
 import ui_templates
+import datetime
+from zoneinfo import ZoneInfo
 
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
@@ -21,6 +23,7 @@ ALT_SECTION_1=os.getenv("ALT_SECTION_1")
 ALT_SECTION_2=os.getenv("ALT_SECTION_2")
 ALT_SECTION_3=os.getenv("ALT_SECTION_3")
 ALLOWED_USERS=os.getenv("ALLOWED_USERS").split(",")
+LOG_CHANNEL=os.getenv("LOG_CHANNEL")
 
 
 # Initializes your app with your bot token and signing secret
@@ -30,6 +33,16 @@ app = App(
     signing_secret=SLACK_SIGNING_SECRET,
     process_before_response=True
 )
+
+def get_todays_date() -> str:
+    """Returns today's date in the format %Y-%m-%d %I:%M:%S %p %Z."""
+    # Get the current datetime object
+    now = datetime.datetime.now()
+    # Convert to Pacific Time (Los Angeles)
+    pacific_timezone = ZoneInfo("America/Los_Angeles") 
+    now_aware = now.astimezone(pacific_timezone)
+    formatted_datetime = now_aware.strftime("%Y-%m-%d %I:%M:%S %p %Z")
+    return formatted_datetime
 
 def respond_to_slack_within_3_seconds(ack):
     ack()
@@ -90,6 +103,12 @@ def handle_view_submission_events(body, client, logger):
             ts=private_metadata["message_ts"],
             text=f"You have selected the week of {private_metadata['date']} for your {private_metadata['windows_version']} upgrade."
         )
+        client.canvases_edit(
+            canvas_id=SLACK_CANVAS,
+            changes=[{"operation":"insert_at_end",
+                    "document_content":{"type":"markdown","markdown":f"{private_metadata["windows_version"]}, {private_metadata['user_email']}, {private_metadata['date']}, {get_todays_date()}"}}]
+        )
+        """
         if private_metadata['date'] == private_metadata["tentative_schedule"]:
             client.canvases_edit(
                 canvas_id=SLACK_CANVAS,
@@ -117,7 +136,7 @@ def handle_view_submission_events(body, client, logger):
                 changes=[{"operation":"insert_after",
                         "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
                         "section_id":f"{ALT_SECTION_3}"}]
-            )
+            )"""
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
 app.view("confirmation_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_view_submission_events])
@@ -151,6 +170,10 @@ def send_windows_message(client, email: str, schedules: dict[str:str], windows_v
         )
         ui_templates.update_confirmation_template({"user_email":email})
     except SlackApiError as e:
+        client.chat_postMessage(
+            channel=LOG_CHANNEL,
+            markdown_text=f'''--------{windows_version}-------\nFailed for {email}: {e.response['error']}"'''
+        )
         print(f"Failed for {email}: {e.response['error']}")
 
 def message_multiple_users(client, emails: list[str], schedules:dict[str:str], windows_version:str):
