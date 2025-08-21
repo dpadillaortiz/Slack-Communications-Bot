@@ -1,0 +1,42 @@
+{
+    "display_information": {
+        "name": "AWS Windows Update",
+        "description": "dwwd",
+        "background_color": "#000000"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "AWS Windows Update",
+            "always_online": false
+        },
+        "shortcuts": [
+            {
+                "name": "Windows Upgrade Message",
+                "type": "global",
+                "callback_id": "windows_update_callbackid",
+                "description": "sends windows update messsage to provided users"
+            }
+        ]
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "chat:write",
+                "commands",
+                "users:read.email",
+                "users:read",
+                "canvases:write",
+                "canvases:read"
+            ]
+        }
+    },
+    "settings": {
+        "interactivity": {
+            "is_enabled": true,
+            "request_url": "https://enter/your/request/url"
+        },
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}
