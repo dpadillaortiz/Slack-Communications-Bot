@@ -142,6 +142,32 @@ SHORTCUT_MODAL_TEMPLATE: Dict[str, Any] = {
 				"text": "Alternate Schedule 3",
 				"emoji": True
 			}
+		},
+		{
+			"type": "input",
+			"block_id": "alternate_schedule_4",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "alternate_schedule_4-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Alternate Schedule 4",
+				"emoji": True
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "alternate_schedule_5",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "alternate_schedule_5-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Alternate Schedule 5",
+				"emoji": True
+			}
 		}
 	]
 }
@@ -163,30 +189,10 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 			}
 		},
 		{
-			"type": "actions",
-			"block_id": "scheduled_date",
-			"elements": [
-				{
-					"type": "button",
-					"action_id": "confirm_date",
-					"text": {
-						"type": "plain_text",
-						"emoji": True,
-						"text": "This week works for me"
-					},
-					"style": "primary",
-					"value": "confirm_date-value"
-				}
-			]
-		},
-		{
-			"type": "divider"
-		},
-		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "*Need a different time?*"
+				"text": ":point_down: *Select a different week:*"
 			}
 		},
 		{
@@ -242,7 +248,50 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 				},
 				"value": "alternate_3-date"
 			}
-		}
+		},
+		{
+			"type": "section",
+			"block_id": "alternate_4",
+			"text": {
+				"type": "mrkdwn",
+				"text": "alternate_4"
+			},
+			"accessory": {
+				"type": "button",
+				"action_id": "confirm_reschedule_4",
+				"text": {
+					"type": "plain_text",
+					"emoji": True,
+					"text": "Choose"
+				},
+				"value": "alternate_4-date"
+			}
+		},
+		{
+			"type": "section",
+			"block_id": "alternate_5",
+			"text": {
+				"type": "mrkdwn",
+				"text": "alternate_5"
+			},
+			"accessory": {
+				"type": "button",
+				"action_id": "confirm_reschedule_5",
+				"text": {
+					"type": "plain_text",
+					"emoji": True,
+					"text": "Choose"
+				},
+				"value": "alternate_5-date"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "screen_message_part_2"
+			}
+		},
 	]
 }
 
@@ -274,20 +323,61 @@ def build_shortcut_modal(private_metadata: str):
     return shortcut_modal
 
 def build_blocks_message(provided_schedules:dict, windows_version:str):
-	screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to *{windows_version}*. We have tentatively scheduled yours for the week of *{provided_schedules['tentative_schedule']}*.\n\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
+
+	screen_message_part_1 = f"""
+	Hello Workmate,\n
+	We are upgrading your Workday laptop to {windows_version} for improved performance and enhanced security.\n\n
+	Your upgrade is scheduled for the week of Month XX–XX, 2025. If this timing works for you, no action is required.\n\n
+	If you need to select a different week, please choose from the options below by Friday, Month 12 at 6:00 PM PT.\n\n
+	"""
+	screen_message_part_2 = f"""		   
+	:gear: The Upgrade Process\n
+	The process is designed to accommodate your schedule. Here's how it works:\n
+	* *Background Download:* On Monday, September XX, the update will download in the background without interrupting your work.
+	* *Restart Prompt:* Once the download is complete, you'll be prompted to restart. You can choose to:
+		* *Restart now*
+		* *Schedule a specific time*
+		* *Restart tonight* (7:00 PM your local time)
+	* *Recommended Timing:* We suggest restarting at the end of your workday or overnight to avoid conflicts with meetings or deadlines.
+	* *45-Minute Installation:* The upgrade takes approximately 45 minutes after you restart. Your laptop must remain plugged in during this time.
+	* *Automatic Restart:* Your laptop will automatically restart to complete the upgrade if you do not restart within your 7-day window.
+	
+	:sparkles: Benefits of {windows_version}\n
+	This update introduces several key improvements to enhance your work experience:\n
+	* *Faster Performance:* Noticeably quicker boot times and application launches.
+	* *Improved Workflow:* Organize your work with a tabbed File Explorer and find what you need faster with a more powerful search.
+	* *Enhanced Security:* Adds a new layer of data encryption to provide extra protection for your work.
+	* *Extended Battery Life:* New efficiency modes help you work longer when unplugged.
+	* *Stronger Connectivity:* Benefit from the latest Wi-Fi standards for a faster, more stable connection.
+	
+	:handshake: Support\n
+	During your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\n
+	For additional questions, please refer to the [{windows_version} FAQ] or ask in #ask-bt.\n\n
+	Thank you,\n
+	BT Infrastructure
+	"""
+	# screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to *{windows_version}*. We have tentatively scheduled yours for the week of *{provided_schedules['tentative_schedule']}*.\n\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
 	blocks_message = deepcopy(BLOCK_MESSAGE_TEMPLATE)["blocks"]
-	blocks_message[0]["text"]["text"]=f"Time to Schedule Your {windows_version} Upgrade"
-	blocks_message[1]["text"]["text"]=screen_1_message
-	blocks_message[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
+	blocks_message[0]["text"]["text"]=f":windows_logo: Your Windows 11 Upgrade: Scheduled for {provided_schedules["tentative_schedule"]} :windows_logo:"
+	blocks_message[1]["text"]["text"]=screen_message_part_1
+	# blocks_message[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
 
-	blocks_message[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
-	blocks_message[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
+	blocks_message[3]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
+	blocks_message[3]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
 
-	blocks_message[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
-	blocks_message[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
+	blocks_message[4]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
+	blocks_message[4]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
 
-	blocks_message[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
-	blocks_message[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
+	blocks_message[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
+	blocks_message[5]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
+
+	blocks_message[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_4']}*"
+	blocks_message[6]["accessory"]["value"]=provided_schedules["alternate_schedule_4"]
+
+	blocks_message[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_5']}*"
+	blocks_message[7]["accessory"]["value"]=provided_schedules["alternate_schedule_5"]
+
+	blocks_message[8]["text"]["text"]=screen_message_part_2
 
 	print("---------------LOOK AT ME-----------------")
 	print("blocks_message type", type(blocks_message))

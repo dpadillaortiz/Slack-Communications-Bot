@@ -84,7 +84,9 @@ def handle_alternative_choice(body, client, logger):
 reschedule_action_ids = [
     "confirm_reschedule_1",
     "confirm_reschedule_2",
-    "confirm_reschedule_3"
+    "confirm_reschedule_3",
+    "confirm_reschedule_4",
+    "confirm_reschedule_5"
 ]
 for action_id in reschedule_action_ids:
     app.action(action_id)(ack=respond_to_slack_within_3_seconds, lazy=[handle_alternative_choice])
@@ -157,7 +159,9 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
         "tentative_schedule": view["state"]["values"]["tentative_schedule"]["tentative_schedule-action"]["value"],
         "alternate_schedule_1": view["state"]["values"]["alternate_schedule_1"]["alternate_schedule_1-action"]["value"],
         "alternate_schedule_2": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
-        "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
+        "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"],
+        "alternate_schedule_4": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
+        "alternate_schedule_5": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
     }
     ui_templates.update_confirmation_template(provided_schedules)
     message_multiple_users(client, provided_emails, provided_schedules, windows_version)
