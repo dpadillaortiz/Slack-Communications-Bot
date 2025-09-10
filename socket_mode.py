@@ -33,7 +33,6 @@ app = App(
     signing_secret=SLACK_SIGNING_SECRET,
     process_before_response=True
 )
-
 def get_todays_date() -> str:
     """Returns today's date in the format %Y-%m-%d %I:%M:%S %p %Z."""
     # Get the current datetime object
@@ -78,6 +77,7 @@ def handle_alternative_choice(body, client, logger):
             "user_id": body["container"]["channel_id"],
             "caller_id":body["message"]["user"]
         }
+        print(private_metadata)
         confirmation_message = f":spiral_calendar_pad: I am scheduling my Windows upgrade on *{selected_date}*"
         client.views_open(
             view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
@@ -89,7 +89,9 @@ def handle_alternative_choice(body, client, logger):
 reschedule_action_ids = [
     "confirm_reschedule_1",
     "confirm_reschedule_2",
-    "confirm_reschedule_3"
+    "confirm_reschedule_3",
+    "confirm_reschedule_4",
+    "confirm_reschedule_5"
 ]
 for action_id in reschedule_action_ids:
     app.action(action_id)(ack=respond_to_slack_within_3_seconds, lazy=[handle_alternative_choice])
@@ -98,6 +100,7 @@ def handle_view_submission_events(body, client, logger):
     try:
         logger.info(body)
         private_metadata=json.loads(body["view"]["private_metadata"])
+        #insert_at_end
         client.chat_update(
             channel=private_metadata["user_id"],
             ts=private_metadata["message_ts"],
@@ -108,35 +111,6 @@ def handle_view_submission_events(body, client, logger):
             changes=[{"operation":"insert_at_end",
                     "document_content":{"type":"markdown","markdown":f"{private_metadata["windows_version"]}, {private_metadata['user_email']}, {private_metadata['date']}, {get_todays_date()}"}}]
         )
-        """
-        if private_metadata['date'] == private_metadata["tentative_schedule"]:
-            client.canvases_edit(
-                canvas_id=SLACK_CANVAS,
-                changes=[{"operation":"insert_after",
-                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
-                        "section_id":f"{TENTATIVE_SECTION}"}]
-            )
-        elif private_metadata['date'] == private_metadata["alternate_schedule_1"]:
-            client.canvases_edit(
-                canvas_id=SLACK_CANVAS,
-                changes=[{"operation":"insert_after",
-                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
-                        "section_id":f"{ALT_SECTION_1}"}]
-            )
-        elif private_metadata['date'] == private_metadata["alternate_schedule_2"]:
-            client.canvases_edit(
-                canvas_id=SLACK_CANVAS,
-                changes=[{"operation":"insert_after",
-                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
-                        "section_id":f"{ALT_SECTION_2}"}]
-            )
-        elif private_metadata['date'] == private_metadata["alternate_schedule_3"]:
-            client.canvases_edit(
-                canvas_id=SLACK_CANVAS,
-                changes=[{"operation":"insert_after",
-                        "document_content":{"type":"markdown","markdown":f"* {private_metadata['user_email']}"},
-                        "section_id":f"{ALT_SECTION_3}"}]
-            )"""
     except SlackApiError as e:
         logger.error(f"Failed to open modal: {e}")
 app.view("confirmation_view")(ack=respond_to_slack_within_3_seconds, lazy=[handle_view_submission_events])
@@ -190,7 +164,9 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
         "tentative_schedule": view["state"]["values"]["tentative_schedule"]["tentative_schedule-action"]["value"],
         "alternate_schedule_1": view["state"]["values"]["alternate_schedule_1"]["alternate_schedule_1-action"]["value"],
         "alternate_schedule_2": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
-        "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
+        "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"],
+        "alternate_schedule_4": view["state"]["values"]["alternate_schedule_4"]["alternate_schedule_4-action"]["value"],
+        "alternate_schedule_5": view["state"]["values"]["alternate_schedule_5"]["alternate_schedule_5-action"]["value"]
     }
     ui_templates.update_confirmation_template(provided_schedules)
     message_multiple_users(client, provided_emails, provided_schedules, windows_version)
