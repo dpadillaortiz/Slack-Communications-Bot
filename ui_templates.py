@@ -286,12 +286,276 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 			}
 		},
 		{
+			"type": "rich_text",
+			"elements": [
+				{
+					"type": "rich_text_section",
+					"elements": [
+						{
+							"type": "text",
+							"text": ":gear: The Upgrade Process\n"
+						}
+					]
+				},
+				{
+					"type": "rich_text_list",
+					"style": "bullet",
+					"indent": 0,
+					"elements": [
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Background Download: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "On Monday, September XX, the update will download in the background without interrupting your work."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Restart Prompt: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Once the download is complete, you'll be prompted to restart. You can choose to:"
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "rich_text_list",
+					"style": "bullet",
+					"indent": 1,
+					"elements": [
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Restart now",
+									"style": {
+										"bold": True
+									}
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Schedule a specific time",
+									"style": {
+										"bold": True
+									}
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Restart tonight ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "(7:00 PM your local time)"
+								}
+							]
+						}
+					]
+				},
+				{
+					"type": "rich_text_list",
+					"style": "bullet",
+					"indent": 0,
+					"elements": [
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Recommended Timing: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "We suggest restarting at the end of your workday or overnight to avoid conflicts with meetings or deadlines."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "45-Minute Installation: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "The upgrade takes approximately 45 minutes after you restart. Your laptop must remain plugged in during this time."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Automatic Restart: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Your laptop will automatically restart to complete the upgrade if you do not restart within your 7-day window."
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": " ",
+				"emoji": True
+			}
+		},
+		{
+			"type": "rich_text",
+			"elements": [
+				{
+					"type": "rich_text_section",
+					"elements": [
+						{
+							"type": "text",
+							"text": ":sparkles: Benefits of {windows_version}\nThis update introduces several key improvements to enhance your work experience:"
+						}
+					]
+				},
+				{
+					"type": "rich_text_list",
+					"style": "bullet",
+					"indent": 0,
+					"elements": [
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Faster Performance: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Noticeably quicker boot times and application launches."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Improved Workflow: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Organize your work with a tabbed File Explorer and find what you need faster with a more powerful search."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Enhanced Security: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Adds a new layer of data encryption to provide extra protection for your work."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Extended Battery Life: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "New efficiency modes help you work longer when unplugged."
+								}
+							]
+						},
+						{
+							"type": "rich_text_section",
+							"elements": [
+								{
+									"type": "text",
+									"text": "Stronger Connectivity: ",
+									"style": {
+										"bold": True
+									}
+								},
+								{
+									"type": "text",
+									"text": "Benefit from the latest Wi-Fi standards for a faster, more stable connection."
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "screen_message_part_2"
+				"text": ":handshake: Support\nDuring your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\nFor additional questions, please refer to the <https://google.com|{windows_version} FAQ> or ask in #ask-bt.\n\nThank you,\nBT Infrastructure"
 			}
-		},
+		}
 	]
 }
 
@@ -300,21 +564,25 @@ def update_confirmation_template(private_metadata:dict):
 		MODAL_CONFIRMATION_TEMPLATE["private_metadata"] = private_metadata
 	else:
 		MODAL_CONFIRMATION_TEMPLATE["private_metadata"].update(private_metadata)
+	print("------MODAL_CONFIRMATION_TEMPLATE['private_metadata']:", MODAL_CONFIRMATION_TEMPLATE["private_metadata"])
+
 
 def build_confirmation_modal(private_metadata: dict, confirmation_message: str):
-    print(MODAL_CONFIRMATION_TEMPLATE)
-    confirmation_modal = deepcopy(MODAL_CONFIRMATION_TEMPLATE)
-    confirmation_modal["blocks"][2]["text"]["text"] = confirmation_message
-    x_private_metadata = confirmation_modal["private_metadata"]
-    print("---------------LOOK AT ME-----------------")
-    print("x_private_metadata type", type(x_private_metadata))
-    print("x_private_metadata:", x_private_metadata)
-    x_private_metadata.update(private_metadata)
-    print("---------------LOOK AT ME-----------------")
-    print("x_private_metadata type", type(x_private_metadata))
-    print("x_private_metadata:", x_private_metadata)
-    confirmation_modal["private_metadata"] = json.dumps(x_private_metadata)
-    return confirmation_modal
+	print(MODAL_CONFIRMATION_TEMPLATE)
+	confirmation_modal = deepcopy(MODAL_CONFIRMATION_TEMPLATE)
+	confirmation_modal["blocks"][2]["text"]["text"] = confirmation_message
+	print(confirmation_modal)
+	x_private_metadata = confirmation_modal["private_metadata"]
+	print("---------------LOOK AT ME-----------------")
+	print("x_private_metadata:", x_private_metadata)
+	print("x_private_metadata type", type(x_private_metadata))
+	x_private_metadata.update(private_metadata)
+	# confirmation_modal["private_metadata"] = json.dumps(private_metadata)
+	print("---------------LOOK AT ME-----------------")
+	print("x_private_metadata type", type(x_private_metadata))
+	print("x_private_metadata:", x_private_metadata)
+	confirmation_modal["private_metadata"] = json.dumps(x_private_metadata)
+	return confirmation_modal
 
 
 def build_shortcut_modal(private_metadata: str):
@@ -325,36 +593,7 @@ def build_shortcut_modal(private_metadata: str):
 def build_blocks_message(provided_schedules:dict, windows_version:str):
 
 	screen_message_part_1 = f"""
-	Hello Workmate,\n
-	We are upgrading your Workday laptop to {windows_version} for improved performance and enhanced security.\n\n
-	Your upgrade is scheduled for the week of Month XX–XX, 2025. If this timing works for you, no action is required.\n\n
-	If you need to select a different week, please choose from the options below by Friday, Month 12 at 6:00 PM PT.\n\n
-	"""
-	screen_message_part_2 = f"""		   
-	:gear: The Upgrade Process\n
-	The process is designed to accommodate your schedule. Here's how it works:\n
-	* *Background Download:* On Monday, September XX, the update will download in the background without interrupting your work.
-	* *Restart Prompt:* Once the download is complete, you'll be prompted to restart. You can choose to:
-		* *Restart now*
-		* *Schedule a specific time*
-		* *Restart tonight* (7:00 PM your local time)
-	* *Recommended Timing:* We suggest restarting at the end of your workday or overnight to avoid conflicts with meetings or deadlines.
-	* *45-Minute Installation:* The upgrade takes approximately 45 minutes after you restart. Your laptop must remain plugged in during this time.
-	* *Automatic Restart:* Your laptop will automatically restart to complete the upgrade if you do not restart within your 7-day window.
-	
-	:sparkles: Benefits of {windows_version}\n
-	This update introduces several key improvements to enhance your work experience:\n
-	* *Faster Performance:* Noticeably quicker boot times and application launches.
-	* *Improved Workflow:* Organize your work with a tabbed File Explorer and find what you need faster with a more powerful search.
-	* *Enhanced Security:* Adds a new layer of data encryption to provide extra protection for your work.
-	* *Extended Battery Life:* New efficiency modes help you work longer when unplugged.
-	* *Stronger Connectivity:* Benefit from the latest Wi-Fi standards for a faster, more stable connection.
-	
-	:handshake: Support\n
-	During your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\n
-	For additional questions, please refer to the [{windows_version} FAQ] or ask in #ask-bt.\n\n
-	Thank you,\n
-	BT Infrastructure
+	Hello Workmate,\nWe are upgrading your Workday laptop to {windows_version} for improved performance and enhanced security.\n\nYour upgrade is scheduled for the week of {provided_schedules["tentative_schedule"]}. If this timing works for you, no action is required.\n\nIf you need to select a different week, please choose from the options below by Friday, Month 12 at 6:00 PM PT.\n\n
 	"""
 	# screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to *{windows_version}*. We have tentatively scheduled yours for the week of *{provided_schedules['tentative_schedule']}*.\n\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
 	blocks_message = deepcopy(BLOCK_MESSAGE_TEMPLATE)["blocks"]
@@ -377,7 +616,8 @@ def build_blocks_message(provided_schedules:dict, windows_version:str):
 	blocks_message[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_5']}*"
 	blocks_message[7]["accessory"]["value"]=provided_schedules["alternate_schedule_5"]
 
-	blocks_message[8]["text"]["text"]=screen_message_part_2
+	blocks_message[10]["elements"][0]["elements"][0]["text"]=f":sparkles: Benefits of {windows_version}\nThis update introduces several key improvements to enhance your work experience:"
+	blocks_message[11]["text"]["text"]=f":handshake: Support\nDuring your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\nFor additional questions, please refer to the <https://google.com|{windows_version} FAQ> or ask in #ask-bt.\n\nThank you,\nBT Infrastructure"
 
 	print("---------------LOOK AT ME-----------------")
 	print("blocks_message type", type(blocks_message))

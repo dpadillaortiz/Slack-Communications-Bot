@@ -73,6 +73,7 @@ def handle_alternative_choice(body, client, logger):
             "user_id": body["container"]["channel_id"],
             "caller_id":body["message"]["user"]
         }
+        print(private_metadata)
         confirmation_message = f":spiral_calendar_pad: I am scheduling my Windows upgrade on *{selected_date}*"
         client.views_open(
             view=ui_templates.build_confirmation_modal(private_metadata, confirmation_message),
@@ -160,8 +161,8 @@ def handle_shortcut_submission_events(ack, body, client, logger, view):
         "alternate_schedule_1": view["state"]["values"]["alternate_schedule_1"]["alternate_schedule_1-action"]["value"],
         "alternate_schedule_2": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
         "alternate_schedule_3": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"],
-        "alternate_schedule_4": view["state"]["values"]["alternate_schedule_2"]["alternate_schedule_2-action"]["value"],
-        "alternate_schedule_5": view["state"]["values"]["alternate_schedule_3"]["alternate_schedule_3-action"]["value"]
+        "alternate_schedule_4": view["state"]["values"]["alternate_schedule_4"]["alternate_schedule_4-action"]["value"],
+        "alternate_schedule_5": view["state"]["values"]["alternate_schedule_5"]["alternate_schedule_5-action"]["value"]
     }
     ui_templates.update_confirmation_template(provided_schedules)
     message_multiple_users(client, provided_emails, provided_schedules, windows_version)
