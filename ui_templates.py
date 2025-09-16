@@ -9,7 +9,7 @@ MODAL_CONFIRMATION_TEMPLATE: Dict[str, Any] = {
 		"text": "Confirm",
 		"emoji": True
 	},
-	"private_metadata": False,
+	"private_metadata": {},
 	"close": {
 		"type": "plain_text",
 		"text": "Go Back",
@@ -62,7 +62,7 @@ SHORTCUT_MODAL_TEMPLATE: Dict[str, Any] = {
 		"text": "Cancel",
 		"emoji": True
 	},
-	"private_metadata": False,
+	"private_metadata": {},
 	"blocks": [
 		{
 			"type": "input",
@@ -75,7 +75,8 @@ SHORTCUT_MODAL_TEMPLATE: Dict[str, Any] = {
 				"type": "plain_text",
 				"text": "Windows Version",
 				"emoji": True
-			}
+			},
+			"optional": True
 		},
 		{
 			"type": "input",
@@ -178,21 +179,35 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "Time to Schedule Your Windows 11 24H2 Upgrade"
+				"text": "Time to Schedule Your {windows_version} Upgrade"
 			}
 		},
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "screen_1_message"
+				"text": "Hello Workmate,"
 			}
 		},
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": ":point_down: *Select a different week:*"
+				"text": "We are upgrading your Workday laptop to {windows_version} for improved performance and enhanced security."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Your upgrade is scheduled for the week of {tentative_schedule}. If this timing works for you, no action is required."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "If you need to select a different week, please choose from the options below by *Friday, Month 12 at 6:00 PM PT*."
 			}
 		},
 		{
@@ -292,8 +307,15 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 					"type": "rich_text_section",
 					"elements": [
 						{
+							"type": "emoji",
+							"name": "gear"
+						},
+						{
 							"type": "text",
-							"text": ":gear: The Upgrade Process\n"
+							"text": " The Upgrade Process",
+							"style": {
+								"bold": True
+							}
 						}
 					]
 				},
@@ -455,8 +477,19 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 					"type": "rich_text_section",
 					"elements": [
 						{
+							"type": "emoji",
+							"name": "sparkles"
+						},
+						{
 							"type": "text",
-							"text": ":sparkles: Benefits of {windows_version}\nThis update introduces several key improvements to enhance your work experience:"
+							"text": " Benefits of {windows_version}\n",
+							"style": {
+								"bold": True
+							}
+						},
+						{
+							"type": "text",
+							"text": "This update introduces several key improvements to enhance your work experience:"
 						}
 					]
 				},
@@ -553,72 +586,81 @@ BLOCK_MESSAGE_TEMPLATE: Dict[str, Any] = {
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": ":handshake: Support\nDuring your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\nFor additional questions, please refer to the <https://google.com|{windows_version} FAQ> or ask in #ask-bt.\n\nThank you,\nBT Infrastructure"
+				"text": ":handshake: *Support*"
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "During your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "For additional questions, please refer to the <https://google.com|{windows_version} FAQ> or ask in #ask-bt."
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Thank you,\n\nBT Infrastructure"
 			}
 		}
 	]
 }
 
 def update_confirmation_template(private_metadata:dict):
-	if MODAL_CONFIRMATION_TEMPLATE["private_metadata"] == False:
+	print("-------------- Processing update_confirmation_template....\n")
+	if MODAL_CONFIRMATION_TEMPLATE["private_metadata"] == True:
 		MODAL_CONFIRMATION_TEMPLATE["private_metadata"] = private_metadata
 	else:
 		MODAL_CONFIRMATION_TEMPLATE["private_metadata"].update(private_metadata)
-	print("------MODAL_CONFIRMATION_TEMPLATE['private_metadata']:", MODAL_CONFIRMATION_TEMPLATE["private_metadata"])
 
 
 def build_confirmation_modal(private_metadata: dict, confirmation_message: str):
-	print(MODAL_CONFIRMATION_TEMPLATE)
+	print("-------------- Processing build_confirmation_modal....\n")
 	confirmation_modal = deepcopy(MODAL_CONFIRMATION_TEMPLATE)
 	confirmation_modal["blocks"][2]["text"]["text"] = confirmation_message
-	print(confirmation_modal)
 	x_private_metadata = confirmation_modal["private_metadata"]
-	print("---------------LOOK AT ME-----------------")
-	print("x_private_metadata:", x_private_metadata)
-	print("x_private_metadata type", type(x_private_metadata))
 	x_private_metadata.update(private_metadata)
-	# confirmation_modal["private_metadata"] = json.dumps(private_metadata)
-	print("---------------LOOK AT ME-----------------")
-	print("x_private_metadata type", type(x_private_metadata))
-	print("x_private_metadata:", x_private_metadata)
 	confirmation_modal["private_metadata"] = json.dumps(x_private_metadata)
 	return confirmation_modal
 
 
 def build_shortcut_modal(private_metadata: str):
-    shortcut_modal = deepcopy(SHORTCUT_MODAL_TEMPLATE)
-    shortcut_modal["private_metadata"]=json.dumps(private_metadata)
-    return shortcut_modal
+	print("-------------- Processing build_shortcut_modal....\n")
+	shortcut_modal = deepcopy(SHORTCUT_MODAL_TEMPLATE)
+	shortcut_modal["private_metadata"]=json.dumps(private_metadata)
+	return shortcut_modal
 
 def build_blocks_message(provided_schedules:dict, windows_version:str):
-
-	screen_message_part_1 = f"""
-	Hello Workmate,\nWe are upgrading your Workday laptop to {windows_version} for improved performance and enhanced security.\n\nYour upgrade is scheduled for the week of {provided_schedules["tentative_schedule"]}. If this timing works for you, no action is required.\n\nIf you need to select a different week, please choose from the options below by Friday, Month 12 at 6:00 PM PT.\n\n
-	"""
-	# screen_1_message = f"Hi Workmate :wave:\nTo keep your Workday-managed laptop secure and up-to-date, we're getting it ready for an upgrade to *{windows_version}*. We have tentatively scheduled yours for the week of *{provided_schedules['tentative_schedule']}*.\n\n You can approve this time or choose a different week below. If you don't make a selection, your upgrade will proceed during this assigned week.\n\n*What to Expect:*\n- The upgrade will download in the background with no interruption to your work.\n- You'll receive a prompt to restart your device once the download is complete.\n- The final installation takes about 45 minutes after you restart, and your device will be unavailable during this time.\n- *Heads-up:* If you don't restart within 7 days of the prompt, your device will restart automatically to complete the upgrade."
+	print("-------------- Processing build_blocks_message....\n")
 	blocks_message = deepcopy(BLOCK_MESSAGE_TEMPLATE)["blocks"]
-	blocks_message[0]["text"]["text"]=f":windows_logo: Your Windows 11 Upgrade: Scheduled for {provided_schedules["tentative_schedule"]} :windows_logo:"
-	blocks_message[1]["text"]["text"]=screen_message_part_1
-	# blocks_message[2]["elements"][0]["value"]=provided_schedules["tentative_schedule"]
+	blocks_message[0]["text"]["text"]=f":windows_logo: *Your Windows 11 Upgrade: Scheduled for {provided_schedules["tentative_schedule"]}* :windows_logo:"
+	blocks_message[2]["text"]["text"]=f"We are upgrading your Workday laptop to *{windows_version}* for improved performance and enhanced security."
+	blocks_message[3]["text"]["text"]=f"Your upgrade is scheduled for the week of {provided_schedules["tentative_schedule"]}. If this timing works for you, *no action is required*."
 
-	blocks_message[3]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
-	blocks_message[3]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
+	blocks_message[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_1']}*"
+	blocks_message[5]["accessory"]["value"]=provided_schedules["alternate_schedule_1"]
 
-	blocks_message[4]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
-	blocks_message[4]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
+	blocks_message[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_2']}*"
+	blocks_message[6]["accessory"]["value"]=provided_schedules["alternate_schedule_2"]
 
-	blocks_message[5]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
-	blocks_message[5]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
+	blocks_message[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_3']}*"
+	blocks_message[7]["accessory"]["value"]=provided_schedules["alternate_schedule_3"]
 
-	blocks_message[6]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_4']}*"
-	blocks_message[6]["accessory"]["value"]=provided_schedules["alternate_schedule_4"]
+	blocks_message[8]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_4']}*"
+	blocks_message[8]["accessory"]["value"]=provided_schedules["alternate_schedule_4"]
 
-	blocks_message[7]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_5']}*"
-	blocks_message[7]["accessory"]["value"]=provided_schedules["alternate_schedule_5"]
+	blocks_message[9]["text"]["text"]=f"Upgrade the week of *{provided_schedules['alternate_schedule_5']}*"
+	blocks_message[9]["accessory"]["value"]=provided_schedules["alternate_schedule_5"]
 
-	blocks_message[10]["elements"][0]["elements"][0]["text"]=f":sparkles: Benefits of {windows_version}\nThis update introduces several key improvements to enhance your work experience:"
-	blocks_message[11]["text"]["text"]=f":handshake: Support\nDuring your upgrade week, you will be added to a dedicated Slack channel for direct support from the BT team.\n\nFor additional questions, please refer to the <https://google.com|{windows_version} FAQ> or ask in #ask-bt.\n\nThank you,\nBT Infrastructure"
+	blocks_message[12]["elements"][0]["elements"][1]["text"]=f"Benefits of {windows_version}\n"
 
-	print("---------------LOOK AT ME-----------------")
-	print("blocks_message type", type(blocks_message))
+	blocks_message[15]["text"]["text"]=f"For additional questions, please refer to the <https://www.google.com|{windows_version} FAQ> or ask in #ask-bt."
+
 	return blocks_message
