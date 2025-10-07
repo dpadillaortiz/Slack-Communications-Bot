@@ -1,0 +1,160 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "BT Comms App",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "input",
+			"element": {
+				"type": "rich_text_input",
+				"action_id": "rich_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Message",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Send message to:*"
+			},
+			"accessory": {
+				"type": "multi_conversations_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select conversations",
+					"emoji": true
+				},
+				"action_id": "multi_conversations_select-action"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Advanced options*"
+							},
+							"description": {
+								"type": "mrkdwn",
+								"text": "*Click here to customize sender identity and in-context call to action*"
+							},
+							"value": "value-0"
+						}
+					],
+					"action_id": "actionId-1"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Do you need to customize the sender identity?*"
+							},
+							"description": {
+								"type": "plain_text",
+								"text": "I want to specify a custom sender name and a custom icon for my message, so that I can align the message's persona with its content.",
+								"emoji": true
+							},
+							"value": "value-0"
+						}
+					],
+					"action_id": "actionId-0"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "plain_text_input-action",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "If left blank, the default is used"
+				}
+			},
+			"hint": {
+				"type": "plain_text",
+				"text": "A Slack bot's display name is limited to a maximum of 21 characters."
+			},
+			"optional": true,
+			"label": {
+				"type": "plain_text",
+				"text": "Sender Name",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "url_text_input",
+				"action_id": "url_text_input-action",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "If left blank, the default icon is used."
+				}
+			},
+			"optional": true,
+			"label": {
+				"type": "plain_text",
+				"text": "Icon URL",
+				"emoji": true
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Do you need add in-context call to action?*"
+							},
+							"description": {
+								"type": "plain_text",
+								"text": "I want to add one or more clickable buttons with external links to my message, so that I can guide users to take a specific, immediate action.",
+								"emoji": true
+							},
+							"value": "value-1"
+						}
+					],
+					"action_id": "actionId-0"
+				}
+			]
+		}
+	]
+}

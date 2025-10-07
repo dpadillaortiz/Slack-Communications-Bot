@@ -1,0 +1,207 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "BT Comms App",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "input",
+			"element": {
+				"type": "rich_text_input",
+				"action_id": "rich_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Message",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Send message to:*"
+			},
+			"accessory": {
+				"type": "multi_conversations_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select conversations",
+					"emoji": true
+				},
+				"action_id": "multi_conversations_select-action"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Advanced options*"
+							},
+							"description": {
+								"type": "mrkdwn",
+								"text": "*Click here to customize sender identity and in-context call to action*"
+							},
+							"value": "value-0"
+						}
+					],
+					"action_id": "actionId-1"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Do you need to customize the sender identity?*"
+							},
+							"description": {
+								"type": "plain_text",
+								"text": "I want to specify a custom sender name and a custom icon for my message, so that I can align the message's persona with its content.",
+								"emoji": true
+							},
+							"value": "value-0"
+						}
+					],
+					"action_id": "actionId-0"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Do you need add in-context call to action?*"
+							},
+							"description": {
+								"type": "plain_text",
+								"text": "I want to add one or more clickable buttons with external links to my message, so that I can guide users to take a specific, immediate action.",
+								"emoji": true
+							},
+							"value": "value-1"
+						}
+					],
+					"action_id": "actionId-0"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "How many in-context call action will you need?"
+			},
+			"accessory": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select an item",
+					"emoji": true
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "1",
+							"emoji": true
+						},
+						"value": "value-0"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "2",
+							"emoji": true
+						},
+						"value": "value-1"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "3",
+							"emoji": true
+						},
+						"value": "value-2"
+					}
+				],
+				"action_id": "static_select-action"
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "You can add up to three actions.",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "CTA button 1",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "plain_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Button Text",
+				"emoji": true
+			},
+			"hint": {
+				"type": "plain_text",
+				"text": "The character limit for button text in a Slack Block Kit button element is 75 characters. The text may appear truncated around 30 characters depending on the display device."
+			}
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "url_text_input",
+				"action_id": "url_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Link",
+				"emoji": true
+			}
+		}
+	]
+}

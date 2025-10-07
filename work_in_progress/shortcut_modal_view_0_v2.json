@@ -1,0 +1,70 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "BT Comms App",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "input",
+			"element": {
+				"type": "rich_text_input",
+				"action_id": "rich_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Message",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Send message to:*"
+			},
+			"accessory": {
+				"type": "multi_conversations_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select conversations",
+					"emoji": true
+				},
+				"action_id": "multi_conversations_select-action"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "checkboxes",
+					"options": [
+						{
+							"text": {
+								"type": "mrkdwn",
+								"text": "*Advanced options*"
+							},
+							"description": {
+								"type": "mrkdwn",
+								"text": "*Click here to customize sender identity and in-context call to action*"
+							},
+							"value": "value-0"
+						}
+					],
+					"action_id": "actionId-1"
+				}
+			]
+		}
+	]
+}

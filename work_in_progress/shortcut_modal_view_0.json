@@ -1,0 +1,78 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "BT Comms App",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "input",
+			"element": {
+				"type": "rich_text_input",
+				"action_id": "rich_text_input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Message",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Send message to:*"
+			},
+			"accessory": {
+				"type": "multi_conversations_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select conversations",
+					"emoji": true
+				},
+				"action_id": "multi_conversations_select-action"
+			}
+		},
+		{
+			"type": "input",
+			"element": {
+				"type": "radio_buttons",
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Yes",
+							"emoji": true
+						},
+						"value": "value-0"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "No",
+							"emoji": true
+						},
+						"value": "value-1"
+					}
+				],
+				"action_id": "radio_buttons-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Do you need to cusotmize the sender identity?",
+				"emoji": true
+			}
+		}
+	]
+}
