@@ -26,4 +26,3 @@ Run the following commands
 `terraform init`
 `terraform apply -var-file="terraform.tfvars"`
 
-# Slack-BT-Comms-App
